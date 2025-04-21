@@ -189,16 +189,37 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 --  Use CTRL+<hjkl> to switch between windows
 --
 --  See `:help wincmd` for a list of all window commands
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+-- vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
+-- vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
+-- vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
+-- vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
 -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
 -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
+
+-- [[ Custom keybinds and remaps ]]
+-- Move lines like in VS Code
+vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv")
+vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv")
+-- Keep cursor in the middle of the screen when navigating
+vim.keymap.set('n', '<C-d>', '<C-d>zz')
+vim.keymap.set('n', '<C-u>', '<C-u>zz')
+vim.keymap.set('n', 'n', 'nzzzv')
+vim.keymap.set('n', 'N', 'Nzzzv')
+-- Keep the copied text when pasting over in visual mode
+vim.keymap.set('x', '<leader>p', '"_dP')
+-- Disable capital Q
+vim.keymap.set('n', 'Q', '<nop>')
+-- Disable singular s
+vim.keymap.set('n', 's', '<nop>')
+-- navigation
+vim.keymap.set('n', '<C-h>', 'b', { desc = 'Move back one word' })
+vim.keymap.set('n', '<C-l>', 'w', { desc = 'Move forward one word' })
+vim.keymap.set('n', '<C-j>', '7jzz', { desc = 'Move down 7 lines' })
+vim.keymap.set('n', '<C-k>', '7kzz', { desc = 'Move up 7 lines' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -225,6 +246,28 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
   end
 end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
+
+-- paths to check for project.godot file
+local paths_to_check = { '/', '/../' }
+local is_godot_project = false
+local godot_project_path = ''
+local cwd = vim.fn.getcwd()
+
+-- iterate over paths and check
+for _, value in pairs(paths_to_check) do
+  if vim.uv.fs_stat(cwd .. value .. 'project.godot') then
+    is_godot_project = true
+    godot_project_path = cwd .. value
+    break
+  end
+end
+
+-- check if server is already running in godot project path
+local is_server_running = vim.uv.fs_stat(godot_project_path .. '/server.pipe')
+-- start server, if not already running
+if is_godot_project and not is_server_running then
+  vim.fn.serverstart(godot_project_path .. '/server.pipe')
+end
 
 -- [[ Configure and install plugins ]]
 --
@@ -421,6 +464,17 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
       vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
+      vim.keymap.set('n', '<leader>sF', function()
+        builtin.find_files {
+          hidden = true,
+          no_ignore = true,
+          file_ignore_patterns = { '.git/', 'node_modules/', 'vendor/' },
+        }
+      end, {
+        noremap = true,
+        silent = true,
+        desc = 'Telescope find all files (incl. non‑git)',
+      })
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
@@ -485,6 +539,7 @@ require('lazy').setup({
       'saghen/blink.cmp',
     },
     config = function()
+      vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = 'Go to definition', silent = true })
       -- Brief aside: **What is LSP?**
       --
       -- LSP is an initialism you've probably heard, but might not understand what it is.
@@ -652,7 +707,33 @@ require('lazy').setup({
       --  When you add blink.cmp, luasnip, etc. Neovim now has *more* capabilities.
       --  So, we create new capabilities with blink.cmp, and then broadcast that to the servers.
       local capabilities = require('blink.cmp').get_lsp_capabilities()
-
+      require('lspconfig').gdscript.setup {}
+      require('lspconfig').intelephense.setup {}
+      require('lspconfig').emmet_language_server.setup {
+        filetypes = { 'css', 'eruby', 'html', 'javascript', 'javascriptreact', 'less', 'sass', 'scss', 'pug', 'typescriptreact', 'blade', 'liquid' },
+        -- Read more about this options in the [vscode docs](https://code.visualstudio.com/docs/editor/emmet#_emmet-configuration).
+        -- **Note:** only the options listed in the table are supported.
+        init_options = {
+          ---@type table<string, string>
+          includeLanguages = {},
+          --- @type string[]
+          excludeLanguages = {},
+          --- @type string[]
+          extensionsPath = {},
+          --- @type table<string, any> [Emmet Docs](https://docs.emmet.io/customization/preferences/)
+          preferences = {},
+          --- @type boolean Defaults to `true`
+          showAbbreviationSuggestions = true,
+          --- @type "always" | "never" Defaults to `"always"`
+          showExpandedAbbreviation = 'always',
+          --- @type boolean Defaults to `false`
+          showSuggestionsAsSnippets = false,
+          --- @type table<string, any> [Emmet Docs](https://docs.emmet.io/customization/syntax-profiles/)
+          syntaxProfiles = {},
+          --- @type table<string, string> [Emmet Docs](https://docs.emmet.io/customization/snippets/#variables)
+          variables = {},
+        },
+      }
       -- Enable the following language servers
       --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
       --
@@ -827,7 +908,7 @@ require('lazy').setup({
         -- <c-k>: Toggle signature help
         --
         -- See :h blink-cmp-config-keymap for defining your own keymap
-        preset = 'default',
+        preset = 'enter',
 
         -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
         --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
@@ -974,7 +1055,7 @@ require('lazy').setup({
         --  the list of additional_vim_regex_highlighting and disabled languages for indent.
         additional_vim_regex_highlighting = { 'ruby' },
       },
-      indent = { enable = true, disable = { 'ruby' } },
+      indent = { enable = true, disable = { 'ruby', 'gdscript', 'gdshader', 'godot_resource' } },
     },
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
@@ -993,11 +1074,11 @@ require('lazy').setup({
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
+  require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
-  -- require 'kickstart.plugins.neo-tree',
+  require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
