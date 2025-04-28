@@ -1037,6 +1037,7 @@ require('lazy').setup({
         'markdown',
         'markdown_inline',
         'php',
+        'python',
         'query',
         'sql',
         'svelte',
