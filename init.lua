@@ -220,6 +220,9 @@ vim.keymap.set('n', '<C-h>', 'b', { desc = 'Move back one word' })
 vim.keymap.set('n', '<C-l>', 'w', { desc = 'Move forward one word' })
 vim.keymap.set('n', '<C-j>', '7jzz', { desc = 'Move down 7 lines' })
 vim.keymap.set('n', '<C-k>', '7kzz', { desc = 'Move up 7 lines' })
+-- Git
+vim.keymap.set('n', '<leader>gs', vim.cmd.Git)
+vim.keymap.set('n', '<leader>gc', ':G commit<CR>')
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
