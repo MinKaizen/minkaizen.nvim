@@ -84,6 +84,11 @@ I hope you enjoy your Neovim journey,
 P.S. You can delete this when you're done too. It's your config now! :)
 --]]
 
+-- Transparent background
+vim.cmd [[
+  highlight Normal guibg=NONE ctermbg=NONE
+]]
+
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
@@ -971,6 +976,10 @@ require('lazy').setup({
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
       vim.cmd.colorscheme 'tokyonight-night'
+      local groups = { 'Normal', 'NormalNC', 'EndOfBuffer', 'LineNr', 'SignColumn' }
+      for _, group in ipairs(groups) do
+        vim.api.nvim_set_hl(0, group, { bg = 'none' })
+      end
     end,
   },
 
