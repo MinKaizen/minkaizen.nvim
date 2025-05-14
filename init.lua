@@ -1126,5 +1126,17 @@ require('lazy').setup({
   },
 })
 
+-- After loading plugins...
+
+-- Set oil to always open no matter what
+vim.api.nvim_create_autocmd('VimEnter', {
+  once = true,
+  callback = function()
+    if vim.fn.argc() == 0 then
+      require('oil').open()
+    end
+  end,
+})
+
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
