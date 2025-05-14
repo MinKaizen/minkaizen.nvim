@@ -7,4 +7,7 @@ return {
     { '-', '<cmd>Oil<cr>', desc = 'Open parent directory', mode = 'n' },
   },
   dependencies = { 'nvim-tree/nvim-web-devicons' },
+  config = function()
+    require('oil').setup()
+  end,
 }

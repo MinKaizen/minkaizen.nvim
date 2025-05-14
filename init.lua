@@ -95,6 +95,10 @@ vim.cmd [[
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+-- disable netrw since we want to use oil instad
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = false
 
@@ -1091,7 +1095,7 @@ require('lazy').setup({
   require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
-  require 'kickstart.plugins.neo-tree',
+  -- require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
@@ -1130,10 +1134,10 @@ require('lazy').setup({
 
 -- Set oil to always open no matter what
 vim.api.nvim_create_autocmd('VimEnter', {
-  once = true,
   callback = function()
-    if vim.fn.argc() == 0 then
-      require('oil').open()
+    local arg = vim.fn.argv()[1]
+    if arg and vim.fn.isdirectory(arg) == 1 then
+      require('oil').open(arg) -- open oil in that directory
     end
   end,
 })
