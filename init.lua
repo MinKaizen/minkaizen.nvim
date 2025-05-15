@@ -307,31 +307,64 @@ require('lazy').setup({
 
   -- Alternatively, use `config = function() ... end` for full control over the configuration.
   -- If you prefer to call `setup` explicitly, use:
-  --    {
-  --        'lewis6991/gitsigns.nvim',
-  --        config = function()
-  --            require('gitsigns').setup({
-  --                -- Your gitsigns configuration here
-  --            })
-  --        end,
-  --    }
+  {
+    'lewis6991/gitsigns.nvim',
+    config = function()
+      require('gitsigns').setup {
+        signs = {
+          add = { text = '+' },
+          change = { text = '~' },
+          delete = { text = '_' },
+          topdelete = { text = '‾' },
+          changedelete = { text = '~' },
+        },
+        on_attach = function(bufnr)
+          local gs = package.loaded.gitsigns
+          local map = function(mode, lhs, rhs, opts)
+            opts = opts or {}
+            opts.buffer = bufnr
+            vim.keymap.set(mode, lhs, rhs, opts)
+          end
+
+          -- Alt-j/k for next/prev hunk
+          map('n', '<A-j>', gs.next_hunk, { desc = 'Next Hunk' })
+          map('n', '<A-k>', gs.prev_hunk, { desc = 'Prev Hunk' })
+
+          -- Select current hunk
+          map('n', '<leader>hv', gs.select_hunk, { desc = 'Select Hunk' })
+          map('x', '<leader>hv', function()
+            gs.select_hunk()
+          end, { desc = 'Select Hunk' })
+
+          -- Stage selected hunk
+          map('n', '<leader>hs', gs.stage_hunk, { desc = 'Stage Hunk' })
+
+          -- Unstage selected hunk
+          map('n', '<leader>hu', gs.undo_stage_hunk, { desc = 'Unstage Hunk' })
+
+          -- Revert selected hunk
+          map('n', '<leader>hr', gs.reset_hunk, { desc = 'Revert Hunk' })
+        end,
+      }
+    end,
+  },
   --
   -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`.
   --
   -- See `:help gitsigns` to understand what the configuration keys do
-  { -- Adds git related signs to the gutter, as well as utilities for managing changes
-    'lewis6991/gitsigns.nvim',
-    opts = {
-      signs = {
-        add = { text = '+' },
-        change = { text = '~' },
-        delete = { text = '_' },
-        topdelete = { text = '‾' },
-        changedelete = { text = '~' },
-      },
-    },
-  },
+  -- { -- Adds git related signs to the gutter, as well as utilities for managing changes
+  --   'lewis6991/gitsigns.nvim',
+  --   opts = {
+  --     signs = {
+  --       add = { text = '+' },
+  --       change = { text = '~' },
+  --       delete = { text = '_' },
+  --       topdelete = { text = '‾' },
+  --       changedelete = { text = '~' },
+  --     },
+  --   },
+  -- },
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
   --
