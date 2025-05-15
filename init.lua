@@ -219,7 +219,7 @@ vim.keymap.set('n', '<C-u>', '<C-u>zz')
 vim.keymap.set('n', 'n', 'nzzzv')
 vim.keymap.set('n', 'N', 'Nzzzv')
 -- Keep the copied text when pasting over in visual mode
-vim.keymap.set('x', '<leader>p', '"_dP')
+vim.keymap.set('x', 'p', '"_dP')
 -- Disable capital Q
 vim.keymap.set('n', 'Q', '<nop>')
 -- Disable singular s
