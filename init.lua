@@ -225,10 +225,12 @@ vim.keymap.set('n', 'Q', '<nop>')
 -- Disable singular s
 vim.keymap.set('n', 's', '<nop>')
 -- navigation
-vim.keymap.set('n', '<C-h>', 'b', { desc = 'Move back one word' })
-vim.keymap.set('n', '<C-l>', 'w', { desc = 'Move forward one word' })
 vim.keymap.set('n', '<C-j>', '7jzz', { desc = 'Move down 7 lines' })
 vim.keymap.set('n', '<C-k>', '7kzz', { desc = 'Move up 7 lines' })
+vim.keymap.set('n', 'H', '^')
+vim.keymap.set('v', 'H', '^')
+vim.keymap.set('n', 'L', '$')
+vim.keymap.set('v', 'L', '$')
 -- Git
 vim.keymap.set('n', '<leader>gs', vim.cmd.Git)
 vim.keymap.set('n', '<leader>gc', ':G commit<CR>')
