@@ -494,7 +494,37 @@ require('lazy').setup({
         --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
         --   },
         -- },
-        -- pickers = {}
+        pickers = {
+          find_files = {
+            attach_mappings = function(_, map)
+              local actions = require 'telescope.actions'
+              map('i', '<CR>', function(prompt_bufnr)
+                actions.close(prompt_bufnr)
+                local selection = require('telescope.actions.state').get_selected_entry()
+                vim.cmd('edit! ' .. vim.fn.fnameescape(selection.path))
+              end)
+              return true
+            end,
+          },
+          live_grep = {
+            attach_mappings = function(_, map)
+              local actions = require 'telescope.actions'
+              local action_state = require 'telescope.actions.state'
+
+              map('i', '<CR>', function(prompt_bufnr)
+                actions.close(prompt_bufnr)
+                local selection = action_state.get_selected_entry()
+                if selection and selection.filename and selection.lnum then
+                  vim.cmd('edit! ' .. vim.fn.fnameescape(selection.filename))
+                  vim.api.nvim_win_set_cursor(0, { selection.lnum, 0 })
+                end
+              end)
+
+              return true
+            end,
+          },
+        },
+
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
