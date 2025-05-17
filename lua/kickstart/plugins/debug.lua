@@ -23,6 +23,7 @@ return {
 
     -- Add your own debuggers here
     'leoluz/nvim-dap-go',
+    'mfussenegger/nvim-dap-python',
   },
   keys = {
     -- Basic debugging keymaps, feel free to change to your liking!
@@ -148,8 +149,8 @@ return {
     -- end
 
     dap.listeners.after.event_initialized['dapui_config'] = dapui.open
-    dap.listeners.before.event_terminated['dapui_config'] = dapui.close
-    dap.listeners.before.event_exited['dapui_config'] = dapui.close
+    dap.listeners.before.event_terminated['dapui_config'] = function() end
+    dap.listeners.before.event_exited['dapui_config'] = function() end
 
     -- Install golang specific config
     require('dap-go').setup {
@@ -159,5 +160,35 @@ return {
         detached = vim.fn.has 'win32' == 0,
       },
     }
+
+    dap.configurations.python = {
+      {
+        type = 'python',
+        request = 'launch',
+        name = 'Launch from project root',
+        program = '${file}',
+        pythonPath = function()
+          local handle = io.popen 'poetry env info --path'
+          local result = handle:read '*a'
+          handle:close()
+          return vim.fn.trim(result) .. '/bin/python'
+        end,
+        cwd = '${workspaceFolder}', -- Set working directory to project root
+      },
+    }
+    -- Python specific config
+    local handle = io.popen 'poetry env info --path 2>/dev/null'
+    local python_path = '/usr/bin/python' -- fallback
+
+    if handle then
+      local result = handle:read '*a'
+      handle:close()
+      local venv_path = vim.fn.trim(result)
+      if venv_path ~= '' then
+        python_path = venv_path .. '/bin/python'
+      end
+    end
+
+    require('dap-python').setup(python_path)
   end,
 }
