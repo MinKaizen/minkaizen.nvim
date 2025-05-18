@@ -58,16 +58,3 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.api.nvim_buf_set_keymap(buf, 'n', '<Esc>', ':q<CR>', { noremap = true, silent = true })
   end,
 })
-
--- Auto-close the floating window after committing (on write)
-vim.api.nvim_create_autocmd('BufWritePost', {
-  pattern = 'COMMIT_EDITMSG',
-  callback = function()
-    vim.defer_fn(function()
-      if _G.git_popup_win and vim.api.nvim_win_is_valid(_G.git_popup_win) then
-        vim.api.nvim_win_close(_G.git_popup_win, true)
-        _G.git_popup_win = nil
-      end
-    end, 100) -- give git time to write output before closing
-  end,
-})
