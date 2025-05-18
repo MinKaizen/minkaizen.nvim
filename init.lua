@@ -239,7 +239,7 @@ vim.keymap.set('n', 'L', '$')
 vim.keymap.set('v', 'L', '$')
 vim.keymap.set('o', 'L', '$')
 -- Git
-vim.keymap.set('n', '<leader>gs', vim.cmd.Git)
+vim.keymap.set('n', '<leader>gs', ':GitPopup<CR>')
 vim.keymap.set('n', '<leader>gc', ':G commit<CR>')
 
 -- [[ Basic Autocommands ]]
@@ -299,6 +299,9 @@ local is_server_running = vim.uv.fs_stat(godot_project_path .. '/server.pipe')
 if is_godot_project and not is_server_running then
   vim.fn.serverstart(godot_project_path .. '/server.pipe')
 end
+
+-- Require custom modules
+require 'custom.git_popup'
 
 -- [[ Configure and install plugins ]]
 --
