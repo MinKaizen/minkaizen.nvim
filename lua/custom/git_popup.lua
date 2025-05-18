@@ -27,6 +27,7 @@ vim.api.nvim_create_user_command('GitPopup', function()
 
   -- Optional: close the popup with <Esc>
   vim.api.nvim_buf_set_keymap(git_buf, 'n', '<Esc>', '<cmd>close<CR>', { noremap = true, silent = true })
+  vim.api.nvim_buf_set_keymap(git_buf, 'n', 'q', '<cmd>close<CR>', { noremap = true, silent = true })
 end, {})
 
 vim.api.nvim_create_autocmd('FileType', {
