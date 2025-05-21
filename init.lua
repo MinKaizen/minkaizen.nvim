@@ -938,8 +938,19 @@ require('lazy').setup({
           }
         end
       end,
+      formatters = {
+        pint = {
+          command = './vendor/bin/pint',
+          args = { '$FILENAME' },
+          stdin = false,
+          condition = function()
+            return vim.fn.filereadable './vendor/bin/pint' == 1
+          end,
+        },
+      },
       formatters_by_ft = {
         lua = { 'stylua' },
+        php = { 'pint' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
