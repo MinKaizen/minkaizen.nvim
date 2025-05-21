@@ -1113,34 +1113,6 @@ require('lazy').setup({
 
       require('mini.jump').setup()
 
-      require('mini.animate').setup {
-        cursor = {
-          timing = function()
-            return 1
-          end,
-        },
-        scroll = {
-          timing = function()
-            return 1
-          end,
-        },
-        resize = {
-          timing = function()
-            return 1
-          end,
-        },
-        open = {
-          timing = function()
-            return 1
-          end,
-        },
-        close = {
-          timing = function()
-            return 1
-          end,
-        },
-      }
-
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
       --  and try some other statusline plugin
