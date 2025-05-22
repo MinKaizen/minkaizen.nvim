@@ -524,15 +524,23 @@ require('lazy').setup({
           find_files = {
             attach_mappings = function(_, map)
               local actions = require 'telescope.actions'
-              map('i', '<CR>', function(prompt_bufnr)
-                actions.close(prompt_bufnr)
-                local selection = require('telescope.actions.state').get_selected_entry()
-                vim.cmd('edit! ' .. vim.fn.fnameescape(selection.path))
-              end)
-
+              --
               -- Disable normal mode. Hit ESC once to close telescope
               map('i', '<Esc>', actions.close)
               map('n', '<Esc>', actions.close)
+
+              return true
+            end,
+          },
+
+          buffers = {
+            attach_mappings = function(_, map)
+              local actions = require 'telescope.actions'
+              --
+              -- Disable normal mode. Hit ESC once to close telescope
+              map('i', '<Esc>', actions.close)
+              map('n', '<Esc>', actions.close)
+
               return true
             end,
           },
@@ -540,17 +548,7 @@ require('lazy').setup({
           live_grep = {
             attach_mappings = function(_, map)
               local actions = require 'telescope.actions'
-              local action_state = require 'telescope.actions.state'
-
-              map('i', '<CR>', function(prompt_bufnr)
-                actions.close(prompt_bufnr)
-                local selection = action_state.get_selected_entry()
-                if selection and selection.filename and selection.lnum then
-                  vim.cmd('edit! ' .. vim.fn.fnameescape(selection.filename))
-                  vim.api.nvim_win_set_cursor(0, { selection.lnum, 0 })
-                end
-              end)
-
+              --
               -- Disable normal mode. Hit ESC once to close telescope
               map('i', '<Esc>', actions.close)
               map('n', '<Esc>', actions.close)
