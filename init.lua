@@ -241,6 +241,10 @@ vim.keymap.set('o', 'L', '$')
 -- Git
 vim.keymap.set('n', '<leader>gs', ':GitPopup<CR>')
 vim.keymap.set('n', '<leader>gc', ':G commit<CR>')
+-- Buffer stuff
+vim.keymap.set('', '<leader>bd', function()
+  require('mini.bufremove').delete(0, false)
+end, { desc = 'Delete buffer safely' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
