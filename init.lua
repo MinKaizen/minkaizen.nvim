@@ -529,9 +529,14 @@ require('lazy').setup({
                 local selection = require('telescope.actions.state').get_selected_entry()
                 vim.cmd('edit! ' .. vim.fn.fnameescape(selection.path))
               end)
+
+              -- Disable normal mode. Hit ESC once to close telescope
+              map('i', '<Esc>', actions.close)
+              map('n', '<Esc>', actions.close)
               return true
             end,
           },
+
           live_grep = {
             attach_mappings = function(_, map)
               local actions = require 'telescope.actions'
@@ -545,6 +550,10 @@ require('lazy').setup({
                   vim.api.nvim_win_set_cursor(0, { selection.lnum, 0 })
                 end
               end)
+
+              -- Disable normal mode. Hit ESC once to close telescope
+              map('i', '<Esc>', actions.close)
+              map('n', '<Esc>', actions.close)
 
               return true
             end,
@@ -1127,6 +1136,10 @@ require('lazy').setup({
       }
 
       require('mini.jump').setup()
+
+      require('mini.bufremove').setup {
+        silent = true,
+      }
 
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
