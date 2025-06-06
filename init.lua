@@ -208,6 +208,17 @@ vim.keymap.set('n', ')', [[/[\]})]<CR>]], { noremap = true, silent = true })
 -- vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 -- vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
+-- Use mini.bufremove to delete all buffers
+vim.api.nvim_create_user_command('BdeleteAll', function()
+  local bufs = vim.api.nvim_list_bufs()
+  for _, buf in ipairs(bufs) do
+    if vim.api.nvim_buf_is_loaded(buf) then
+      require('mini.bufremove').delete(buf, false)
+    end
+  end
+end, {})
+vim.keymap.set('n', '<leader>bq', '<cmd>BdeleteAll<CR>', { desc = 'Close all buffers' })
+
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
 -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
