@@ -314,8 +314,8 @@ vim.opt.rtp:prepend(lazypath)
 
 -- paths to check for project.godot file
 local paths_to_check = { '/', '/../' }
-local is_godot_project = false
-local godot_project_path = ''
+_G.is_godot_project = false
+_G.godot_project_path = ''
 local cwd = vim.fn.getcwd()
 
 -- iterate over paths and check
@@ -328,10 +328,11 @@ for _, value in pairs(paths_to_check) do
 end
 
 -- check if server is already running in godot project path
-local is_server_running = vim.uv.fs_stat(godot_project_path .. '/server.pipe')
+local is_server_running = vim.uv.fs_stat(godot_project_path .. '/.godothost')
 -- start server, if not already running
 if is_godot_project and not is_server_running then
-  vim.fn.serverstart(godot_project_path .. '/server.pipe')
+  print 'Godot serve should be running'
+  vim.fn.serverstart(godot_project_path .. '/.godothost')
 end
 
 -- Require custom modules
