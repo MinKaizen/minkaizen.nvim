@@ -194,6 +194,12 @@ vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
 vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
 vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
+-- Use visual lines when navigating
+vim.keymap.set({ 'n', 'v' }, 'j', 'gj', { noremap = true, silent = true })
+vim.keymap.set({ 'n', 'v' }, 'k', 'gk', { noremap = true, silent = true })
+vim.keymap.set({ 'n', 'v' }, '0', 'g0', { noremap = true, silent = true })
+vim.keymap.set({ 'n', 'v' }, '$', 'g$', { noremap = true, silent = true })
+
 -- Jump to previous bracket
 vim.keymap.set('n', '(', [[?[\[{(]<CR>]], { noremap = true, silent = true })
 -- Jump to next bracket
