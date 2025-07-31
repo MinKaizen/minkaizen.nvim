@@ -170,6 +170,9 @@ vim.opt.scrolloff = 15
 -- See `:help 'confirm'`
 vim.opt.confirm = true
 
+-- needed for some obsidian ui to work
+vim.opt.conceallevel = 1
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
