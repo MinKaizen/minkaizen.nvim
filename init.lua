@@ -989,10 +989,15 @@ require('lazy').setup({
             return vim.fn.filereadable './vendor/bin/pint' == 1
           end,
         },
+        liquid = {
+          command = 'prettierd',
+          args = { '$FILENAME' },
+        },
       },
       formatters_by_ft = {
         lua = { 'stylua' },
         php = { 'pint' },
+        liquid = { 'liquid' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
