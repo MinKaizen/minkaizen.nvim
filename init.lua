@@ -173,6 +173,18 @@ vim.opt.confirm = true
 -- needed for some obsidian ui to work
 vim.opt.conceallevel = 1
 
+-- Always use spaces instead of tabs
+vim.opt.expandtab = true
+
+-- Number of spaces a <Tab> counts for
+vim.opt.tabstop = 2
+
+-- Number of spaces to use for each step of (auto)indent
+vim.opt.shiftwidth = 2
+
+-- Number of spaces used for editing operations like >> and <<
+vim.opt.softtabstop = 2
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
