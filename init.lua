@@ -247,9 +247,6 @@ vim.keymap.set('n', '<leader>bq', '<cmd>BdeleteAll<CR>', { desc = 'Close all buf
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
 
 -- [[ Custom keybinds and remaps ]]
--- Move lines like in VS Code
-vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv")
-vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv")
 -- Keep cursor in the middle of the screen when navigating
 vim.keymap.set('n', '<C-d>', '<C-d>zz')
 vim.keymap.set('n', '<C-u>', '<C-u>zz')
