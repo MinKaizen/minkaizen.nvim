@@ -1137,10 +1137,10 @@ require('lazy').setup({
       require('mini.move').setup {
         mappings = {
           -- Move visual selection in Visual mode. Defaults are Alt (Meta) + hjkl.
-          left = '<M-h>',
-          right = '<M-l>',
-          down = '<M-j>',
-          up = '<M-k>',
+          left = '<C-h>',
+          right = '<C-l>',
+          down = '<C-j>',
+          up = '<C-k>',
 
           -- Move current line in Normal mode
           line_left = '',
