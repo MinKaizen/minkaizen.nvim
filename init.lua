@@ -185,6 +185,9 @@ vim.opt.shiftwidth = 2
 -- Number of spaces used for editing operations like >> and <<
 vim.opt.softtabstop = 2
 
+-- Hyphens should separate words
+vim.opt.iskeyword:remove('-')
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
