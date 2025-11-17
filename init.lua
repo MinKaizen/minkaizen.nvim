@@ -302,6 +302,15 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+-- Set filetype for Blade templates
+vim.api.nvim_create_autocmd({ 'BufRead', 'BufNewFile' }, {
+  desc = 'Set filetype for Blade templates',
+  pattern = '*.blade.php',
+  callback = function()
+    vim.bo.filetype = 'blade'
+  end,
+})
+
 vim.api.nvim_create_user_command('DapCloseAll', function()
   for _, win in ipairs(vim.api.nvim_list_wins()) do
     local buf = vim.api.nvim_win_get_buf(win)
@@ -1007,6 +1016,7 @@ require('lazy').setup({
         lua = { 'stylua' },
         php = { 'pint' },
         liquid = { 'liquid' },
+        blade = { 'blade-formatter' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
