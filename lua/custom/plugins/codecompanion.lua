@@ -28,18 +28,20 @@ return {
         cmd = { adapter = 'openai' },
       },
       adapters = {
-        openai = function()
-          -- Prefer a scoped var, fall back to common name
-          local key = getenv 'OPENAI_KEY_CODECOMPANION' or getenv 'OPENAI_API_KEY'
-          assert(key, '[codecompanion] Missing OPENAI_* API key in environment (.env)')
+        http = {
+          openai = function()
+            -- Prefer a scoped var, fall back to common name
+            local key = getenv 'OPENAI_KEY_CODECOMPANION' or getenv 'OPENAI_API_KEY'
+            assert(key, '[codecompanion] Missing OPENAI_* API key in environment (.env)')
 
-          -- IMPORTANT: ensure we’re calling the chat/completions endpoint (expects `choices`)
-          return require('codecompanion.adapters').extend('openai', {
-            env = { api_key = key },
-            schema = { url = 'https://api.openai.com/v1/chat/completions' },
-            model = 'gpt-4o-mini', -- or your preferred OpenAI chat model
-          })
-        end,
+            -- IMPORTANT: ensure we’re calling the chat/completions endpoint (expects `choices`)
+            return require('codecompanion.adapters').extend('openai', {
+              env = { api_key = key },
+              schema = { url = 'https://api.openai.com/v1/chat/completions' },
+              model = 'gpt-4o-mini', -- or your preferred OpenAI chat model
+            })
+          end,
+        },
       },
     }
   end,
