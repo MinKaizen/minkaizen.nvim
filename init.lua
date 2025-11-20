@@ -250,6 +250,9 @@ vim.keymap.set('n', '<leader>bq', '<cmd>BdeleteAll<CR>', { desc = 'Close all buf
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
 
 -- [[ Custom keybinds and remaps ]]
+-- Double tap v to enter visual line mode
+vim.keymap.set('n', 'vv', 'V', { desc = 'Visual Line Mode' })
+
 -- Keep cursor in the middle of the screen when navigating
 vim.keymap.set('n', '<C-d>', '<C-d>zz')
 vim.keymap.set('n', '<C-u>', '<C-u>zz')
