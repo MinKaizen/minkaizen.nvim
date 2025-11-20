@@ -47,7 +47,7 @@ return {
       print 'Snippets reloaded!'
     end, { desc = 'Reload LuaSnip snippets' })
 
-    vim.keymap.set({ 'i', 's' }, '<Tab>', function()
+    vim.keymap.set({ 's' }, '<Tab>', function()
       if ls.expand_or_jumpable() then
         ls.expand_or_jump()
       end
