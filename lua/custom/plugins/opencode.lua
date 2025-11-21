@@ -15,7 +15,10 @@ return {
 
     -- Recommended/example keymaps.
     vim.keymap.set({ "n", "x" }, "<leader>oa", function() require("opencode").ask("@this: ", { submit = true }) end, { desc = "Ask about this" })
+    vim.keymap.set({ "n", "x" }, "<leader>ob", function() require("opencode").ask("@buffer: ", { submit = true }) end, { desc = "Ask about buffer" })
+    vim.keymap.set({ "n", "x" }, "<leader>og", function() require("opencode").ask("@buffers: ", { submit = true }) end, { desc = "Ask about ALL buffers" })
     vim.keymap.set({ "n", "x" }, "<leader>or", function() require("opencode").command("review") end, { desc = "Review this" })
+    vim.keymap.set({ "n", "x" }, "<leader>oe", function() require("opencode").command("explain") end, { desc = "Explain this" })
     vim.keymap.set({ "n", "x" }, "<leader>oo", function() require("opencode").command("optimize") end, { desc = "Optimize this" })
     vim.keymap.set("n", "<leader>o<tab>", function() require("opencode").command("agent_cycle") end, { desc = "Cycle selected agent" })
     vim.keymap.set("n", "<leader>ot", function() require("opencode").toggle() end, { desc = "Toggle embedded" })

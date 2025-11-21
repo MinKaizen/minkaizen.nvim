@@ -20,6 +20,22 @@ local types = require 'luasnip.util.types'
 local conds = require 'luasnip.extras.conditions'
 local conds_expand = require 'luasnip.extras.conditions.expand'
 
+local function in_opening_tag()
+  local ok, node = pcall(vim.treesitter.get_node)
+  if not ok or not node then
+    return false
+  end
+
+  while node do
+    local type = node:type()
+    if type == 'start_tag' or type == 'self_closing_tag' then
+      return true
+    end
+    node = node:parent()
+  end
+  return false
+end
+
 ls.add_snippets('blade', {
   -- @if block
   s('if', {
@@ -354,28 +370,6 @@ ls.add_snippets('blade', {
     i(0),
   }),
 
-  -- @class
-  s('class', {
-    t '@class([',
-    i(1, 'base-class'),
-    t ' => true, ',
-    i(2, 'conditional-class'),
-    t ' => ',
-    i(3, '$condition'),
-    t '])',
-    i(0),
-  }),
-
-  -- @style
-  s('style', {
-    t '@style([',
-    i(1, 'color: red'),
-    t ' => ',
-    i(2, '$condition'),
-    t '])',
-    i(0),
-  }),
-
   -- @selected
   s('selected', {
     t '@selected(',
@@ -415,4 +409,64 @@ ls.add_snippets('blade', {
     t ')',
     i(0),
   }),
+
+  -- Common HTML attributes (only inside tags)
+  s({ trig = 'class', condition = in_opening_tag }, {
+    t 'class="',
+    i(1),
+    t '"',
+  }),
+
+  s({ trig = 'id', condition = in_opening_tag }, {
+    t 'id="',
+    i(1),
+    t '"',
+  }),
+
+  s({ trig = 'type', condition = in_opening_tag }, {
+    t 'type="',
+    i(1),
+    t '"',
+  }),
+
+  s({ trig = 'style', condition = in_opening_tag }, {
+    t 'style="',
+    i(1),
+    t '"',
+  }),
+
+  s({ trig = 'value', condition = in_opening_tag }, {
+    t 'value="',
+    i(1),
+    t '"',
+  }),
+
+  s({ trig = 'required', condition = in_opening_tag }, {
+    t 'required',
+    i(1),
+  }),
+
+  s({ trig = 'checked', condition = in_opening_tag }, {
+    t 'checked',
+    i(1),
+  }),
+
+  s({ trig = 'selected', condition = in_opening_tag }, {
+    t 'selected',
+    i(1),
+  }),
+
+  s({ trig = 'srcset', condition = in_opening_tag }, {
+    t 'srcset="',
+    i(1, 'image'),
+    t '-480w.jpg 480w, ',
+    rep(1),
+    t '-800w.jpg 800w"',
+  }),
+
+  s({ trig = 'sizes', condition = in_opening_tag }, {
+    t 'sizes="(max-width: 600px) 480px, 800px"',
+    i(1),
+  }),
+
 })
