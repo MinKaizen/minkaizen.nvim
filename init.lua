@@ -243,6 +243,18 @@ vim.api.nvim_create_user_command('BdeleteAll', function()
 end, {})
 vim.keymap.set('n', '<leader>bq', '<cmd>BdeleteAll<CR>', { desc = 'Close all buffers' })
 
+-- Use mini.bufremove to delete all but the current buffer
+vim.api.nvim_create_user_command('BdeleteOthers', function()
+  local current = vim.api.nvim_get_current_buf()
+  local bufs = vim.api.nvim_list_bufs()
+  for _, buf in ipairs(bufs) do
+    if buf ~= current and vim.api.nvim_buf_is_loaded(buf) then
+      require('mini.bufremove').delete(buf, false)
+    end
+  end
+end, {})
+vim.keymap.set('n', '<leader>bs', '<cmd>BdeleteOthers<CR>', { desc = 'Close other buffers' })
+
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
 -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
