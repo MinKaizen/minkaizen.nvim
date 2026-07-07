@@ -967,7 +967,6 @@ require('lazy').setup({
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
       })
-      require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
       require('mason-lspconfig').setup {
         ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
@@ -983,6 +982,8 @@ require('lazy').setup({
           end,
         },
       }
+
+      require('mason-tool-installer').setup { ensure_installed = ensure_installed }
     end,
   },
 
