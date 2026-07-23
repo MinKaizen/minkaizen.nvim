@@ -181,7 +181,7 @@ vim.opt.shiftwidth = 2
 vim.opt.softtabstop = 2
 
 -- Hyphens should separate words
-vim.opt.iskeyword:remove('-')
+vim.opt.iskeyword:remove '-'
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
