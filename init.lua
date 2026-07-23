@@ -84,11 +84,6 @@ I hope you enjoy your Neovim journey,
 P.S. You can delete this when you're done too. It's your config now! :)
 --]]
 
--- Transparent background
-vim.cmd [[
-  highlight Normal guibg=NONE ctermbg=NONE
-]]
-
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
@@ -100,7 +95,7 @@ vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -170,7 +165,7 @@ vim.opt.scrolloff = 15
 -- See `:help 'confirm'`
 vim.opt.confirm = true
 
--- needed for some obsidian ui to work
+-- Conceal markdown syntax (links, emphasis markers) in zk notes
 vim.opt.conceallevel = 1
 
 -- Always use spaces instead of tabs
@@ -218,10 +213,13 @@ vim.keymap.set({ 'n', 'v' }, 'k', 'gk', { noremap = true, silent = true })
 vim.keymap.set({ 'n', 'v' }, '0', 'g0', { noremap = true, silent = true })
 vim.keymap.set({ 'n', 'v' }, '$', 'g$', { noremap = true, silent = true })
 
--- Jump to previous bracket
-vim.keymap.set('n', '(', [[?[\[{(]<CR>]], { noremap = true, silent = true })
--- Jump to next bracket
-vim.keymap.set('n', ')', [[/[\]})]<CR>]], { noremap = true, silent = true })
+-- Jump to previous/next bracket without clobbering the search register
+vim.keymap.set('n', '(', function()
+  vim.fn.search([=[[\[{(]]=], 'b')
+end, { desc = 'Jump to previous bracket' })
+vim.keymap.set('n', ')', function()
+  vim.fn.search [=[[\]})]]=]
+end, { desc = 'Jump to next bracket' })
 --
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
@@ -270,8 +268,8 @@ vim.keymap.set('n', '<C-d>', '<C-d>zz')
 vim.keymap.set('n', '<C-u>', '<C-u>zz')
 vim.keymap.set('n', 'n', 'nzzzv')
 vim.keymap.set('n', 'N', 'Nzzzv')
--- Keep the copied text when pasting over in visual mode
-vim.keymap.set('x', 'p', '"_dP')
+-- Keep the copied text when pasting over in visual mode (see :h v_P)
+vim.keymap.set('x', 'p', 'P')
 -- Disable capital Q
 vim.keymap.set('n', 'Q', '<nop>')
 -- Disable singular s
@@ -308,12 +306,12 @@ end, { desc = 'Focus floating window' })
 
 -- Highlight when yanking (copying) text
 --  Try it with `yap` in normal mode
---  See `:help vim.highlight.on_yank()`
+--  See `:help vim.hl.on_yank()`
 vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight when yanking (copying) text',
   group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
   callback = function()
-    vim.highlight.on_yank()
+    vim.hl.on_yank()
   end,
 })
 
@@ -582,46 +580,11 @@ require('lazy').setup({
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
-        pickers = {
-          find_files = {
-            attach_mappings = function(_, map)
-              local actions = require 'telescope.actions'
-              --
-              -- Disable normal mode. Hit ESC once to close telescope
-              map('i', '<Esc>', actions.close)
-              map('n', '<Esc>', actions.close)
-
-              return true
-            end,
-          },
-
-          buffers = {
-            attach_mappings = function(_, map)
-              local actions = require 'telescope.actions'
-              --
-              -- Disable normal mode. Hit ESC once to close telescope
-              map('i', '<Esc>', actions.close)
-              map('n', '<Esc>', actions.close)
-
-              return true
-            end,
-          },
-
-          live_grep = {
-            attach_mappings = function(_, map)
-              local actions = require 'telescope.actions'
-              --
-              -- Disable normal mode. Hit ESC once to close telescope
-              map('i', '<Esc>', actions.close)
-              map('n', '<Esc>', actions.close)
-
-              return true
-            end,
+        defaults = {
+          mappings = {
+            -- Disable normal mode. Hit ESC once to close telescope
+            i = { ['<Esc>'] = require('telescope.actions').close },
+            n = { ['<Esc>'] = require('telescope.actions').close },
           },
         },
 
@@ -796,26 +759,13 @@ require('lazy').setup({
           --  the definition of its *type*, not where it was *defined*.
           map('grt', require('telescope.builtin').lsp_type_definitions, '[G]oto [T]ype Definition')
 
-          -- This function resolves a difference between neovim nightly (version 0.11) and stable (version 0.10)
-          ---@param client vim.lsp.Client
-          ---@param method vim.lsp.protocol.Method
-          ---@param bufnr? integer some lsp support methods only in specific files
-          ---@return boolean
-          local function client_supports_method(client, method, bufnr)
-            if vim.fn.has 'nvim-0.11' == 1 then
-              return client:supports_method(method, bufnr)
-            else
-              return client.supports_method(method, { bufnr = bufnr })
-            end
-          end
-
           -- The following two autocommands are used to highlight references of the
           -- word under your cursor when your cursor rests there for a little while.
           --    See `:help CursorHold` for information about when this is executed
           --
           -- When you move your cursor, the highlights will be cleared (the second autocommand).
           local client = vim.lsp.get_client_by_id(event.data.client_id)
-          if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf) then
+          if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf) then
             local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
             vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
               buffer = event.buf,
@@ -842,7 +792,7 @@ require('lazy').setup({
           -- code, if the language server you are using supports them
           --
           -- This may be unwanted, since they displace some of your code
-          if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
+          if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
             map('<leader>th', function()
               vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
             end, '[T]oggle Inlay [H]ints')
@@ -879,11 +829,8 @@ require('lazy').setup({
         },
       }
 
-      -- LSP servers and clients are able to communicate to each other what features they support.
-      --  By default, Neovim doesn't support everything that is in the LSP specification.
-      --  When you add blink.cmp, luasnip, etc. Neovim now has *more* capabilities.
-      --  So, we create new capabilities with blink.cmp, and then broadcast that to the servers.
-      local capabilities = require('blink.cmp').get_lsp_capabilities()
+      -- NOTE: blink.cmp injects its completion capabilities into every server
+      -- by itself via vim.lsp.config('*'), so no manual capability plumbing is needed.
       vim.lsp.config('gdscript', {})
       vim.lsp.config('intelephense', {})
       vim.lsp.config('emmet_language_server', {
@@ -968,28 +915,22 @@ require('lazy').setup({
         'stylua', -- Used to format Lua code
       })
 
+      -- Register the per-server overrides from the `servers` table above.
+      -- mason-lspconfig v2 then auto-enables every server it has installed.
+      for server_name, server in pairs(servers) do
+        vim.lsp.config(server_name, server)
+      end
+
       require('mason-lspconfig').setup {
         ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
-        automatic_installation = false,
-        handlers = {
-          function(server_name)
-            local server = servers[server_name] or {}
-            -- This handles overriding only values explicitly passed
-            -- by the server configuration above. Useful when disabling
-            -- certain features of an LSP (for example, turning off formatting for ts_ls)
-            server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            vim.lsp.config[server_name].setup(server)
-          end,
-        },
       }
 
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
     end,
   },
 
-  { -- Autoformat
+  { -- Autoformat (manual only via <leader>f; format on save is intentionally disabled)
     'stevearc/conform.nvim',
-    event = { 'BufWritePre' },
     cmd = { 'ConformInfo' },
     keys = {
       {
@@ -1003,17 +944,6 @@ require('lazy').setup({
     },
     opts = {
       notify_on_error = false,
-      format_on_save = function(bufnr)
-        -- Disable "format_on_save lsp_fallback" for languages that don't
-        -- have a well standardized coding style. You can add additional
-        -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true, tsx = true }
-        if disable_filetypes[vim.bo[bufnr].filetype] then
-          return nil
-        else
-          return nil
-        end
-      end,
       formatters = {
         pint = {
           command = './vendor/bin/pint',
@@ -1225,7 +1155,6 @@ require('lazy').setup({
         'html',
         'javascript',
         'liquid',
-        'lua',
         'lua',
         'luadoc',
         'markdown',

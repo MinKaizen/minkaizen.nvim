@@ -24,8 +24,9 @@ local config_func = function()
 
   local function set_keymaps(bufnr)
     local opts = { noremap = true, silent = true, buffer = bufnr }
-    vim.keymap.set('v', '<leader>zn', ":ZkNewFromTitleSelection<CR>", opts)
-    vim.keymap.set('n', 'gr', '<Cmd>ZkBacklinks<CR>', opts)
+    vim.keymap.set('v', '<leader>zn', ':ZkNewFromTitleSelection<CR>', opts)
+    -- Not `gr`: that would shadow the built-in grr/grn/gra/gri LSP maps
+    vim.keymap.set('n', '<leader>zb', '<Cmd>ZkBacklinks<CR>', vim.tbl_extend('force', opts, { desc = 'Zk [B]acklinks' }))
   end
 
   vim.api.nvim_create_autocmd('FileType', {

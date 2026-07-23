@@ -6,11 +6,17 @@ return {
       direction = 'float',
       float_opts = {
         border = 'rounded',
-        width = math.floor(vim.o.columns * 0.8),
-        height = math.floor(vim.o.lines * 0.8),
+        -- Functions so the float adapts when the terminal window is resized
+        width = function()
+          return math.floor(vim.o.columns * 0.8)
+        end,
+        height = function()
+          return math.floor(vim.o.lines * 0.8)
+        end,
       },
     }
 
-    vim.keymap.set('n', '<leader>t', ':ToggleTerm<CR>')
+    -- <leader>tt (not <leader>t) so it doesn't shadow the [T]oggle group (<leader>th etc.)
+    vim.keymap.set('n', '<leader>tt', '<cmd>ToggleTerm<CR>', { desc = '[T]oggle [T]erminal' })
   end,
 }
