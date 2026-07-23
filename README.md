@@ -19,11 +19,18 @@ Kickstart.nvim targets *only* the latest
 ['nightly'](https://github.com/neovim/neovim/releases/tag/nightly) of Neovim.
 If you are experiencing issues, please make sure you have the latest versions.
 
+> [!NOTE]
+> This config uses the `main` branch of nvim-treesitter, which requires
+> Neovim 0.12 or later.
+
 ### Install External Dependencies
 
 External Requirements:
 - Basic utils: `git`, `make`, `unzip`, C Compiler (`gcc`)
 - [ripgrep](https://github.com/BurntSushi/ripgrep#installation)
+- The [tree-sitter CLI](https://github.com/tree-sitter/tree-sitter): required
+  by nvim-treesitter's `main` branch to install parsers. Install it via Mason
+  (`:MasonInstall tree-sitter-cli`) or your system package manager
 - Clipboard tool (xclip/xsel/win32yank or other depending on the platform)
 - A [Nerd Font](https://www.nerdfonts.com/): optional, provides various icons
   - if you have it set `vim.g.have_nerd_font` in `init.lua` to true
