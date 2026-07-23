@@ -3,5 +3,6 @@ test.sh
 .luarc.json
 nvim
 .env
+.kaizen/
 
 spell/
