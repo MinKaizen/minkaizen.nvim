@@ -566,13 +566,15 @@ require('lazy').setup({
       -- type in the prompt window. You'll see a list of `help_tags` options and
       -- a corresponding preview of the help.
       --
-      -- Two important keymaps to use while in Telescope are:
+      -- An important keymap to use while in Telescope is:
       --  - Insert mode: <c-/>
-      --  - Normal mode: ?
       --
       -- This opens a window that shows you all of the keymaps for the current
       -- Telescope picker. This is really useful to discover what Telescope can
       -- do as well as how to actually do it!
+      --
+      -- NOTE: Normal mode (and its `?` keymap) is not reachable in this config:
+      -- `defaults.mappings` below maps <Esc> to close Telescope instead.
 
       -- [[ Configure Telescope ]]
       -- See `:help telescope` and `:help telescope.setup()`
