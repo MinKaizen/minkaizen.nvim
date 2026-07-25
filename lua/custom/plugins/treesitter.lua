@@ -21,6 +21,7 @@ return {
       'godot_resource',
       'html',
       'javascript',
+      'json',
       'liquid',
       'lua',
       'luadoc',
@@ -44,10 +45,14 @@ return {
       desc = 'Enable treesitter highlighting and indentation',
       group = vim.api.nvim_create_augroup('treesitter-start', { clear = true }),
       callback = function(args)
-        -- Filetypes without an installed parser keep regex highlighting
-        if not pcall(vim.treesitter.start, args.buf) then
+        -- Keep regex highlighting unless both a parser and highlight query exist.
+        -- vim.treesitter.start() disables regex syntax even when no query is found.
+        local has_parser, parser = pcall(vim.treesitter.get_parser, args.buf)
+        if not has_parser or not vim.treesitter.query.get(parser:lang(), 'highlights') then
           return
         end
+
+        vim.treesitter.start(args.buf)
         if not no_ts_indent[vim.bo[args.buf].filetype] then
           vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
         end
