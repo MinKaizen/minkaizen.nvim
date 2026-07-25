@@ -48,7 +48,12 @@ return {
         -- Keep regex highlighting unless both a parser and highlight query exist.
         -- vim.treesitter.start() disables regex syntax even when no query is found.
         local has_parser, parser = pcall(vim.treesitter.get_parser, args.buf)
-        if not has_parser or not vim.treesitter.query.get(parser:lang(), 'highlights') then
+        if not has_parser or parser == nil then
+          return
+        end
+
+        local has_query, query = pcall(vim.treesitter.query.get, parser:lang(), 'highlights')
+        if not has_query or query == nil then
           return
         end
 
