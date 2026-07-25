@@ -36,6 +36,8 @@ require('lazy').setup({
   -- All other plugins: one spec file each under `lua/custom/plugins/`
   { import = 'custom.plugins' },
 }, {
+  -- No configured plugins use rockspecs, so skip Lazy's optional LuaRocks environment.
+  rocks = { enabled = false },
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
     -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
