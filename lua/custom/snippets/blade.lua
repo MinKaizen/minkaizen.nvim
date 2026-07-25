@@ -468,5 +468,4 @@ ls.add_snippets('blade', {
     t 'sizes="(max-width: 600px) 480px, 800px"',
     i(1),
   }),
-
 })

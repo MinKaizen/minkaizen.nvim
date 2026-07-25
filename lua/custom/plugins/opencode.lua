@@ -1,9 +1,9 @@
 return {
-  "NickvanDyke/opencode.nvim",
+  'NickvanDyke/opencode.nvim',
   dependencies = {
     -- Recommended for `ask()` and `select()`.
     -- Required for `toggle()`.
-    { "folke/snacks.nvim", opts = { input = {}, picker = {} } },
+    { 'folke/snacks.nvim', opts = { input = {}, picker = {} } },
   },
   config = function()
     vim.g.opencode_opts = {
@@ -14,16 +14,36 @@ return {
     vim.o.autoread = true
 
     -- Recommended/example keymaps.
-    vim.keymap.set({ "n", "x" }, "<leader>oa", function() require("opencode").ask("@this: ", { submit = true }) end, { desc = "Ask about this" })
-    vim.keymap.set({ "n", "x" }, "<leader>ob", function() require("opencode").ask("@buffer: ", { submit = true }) end, { desc = "Ask about buffer" })
-    vim.keymap.set({ "n", "x" }, "<leader>og", function() require("opencode").ask("@buffers: ", { submit = true }) end, { desc = "Ask about ALL buffers" })
-    vim.keymap.set({ "n", "x" }, "<leader>or", function() require("opencode").command("review") end, { desc = "Review this" })
-    vim.keymap.set({ "n", "x" }, "<leader>oe", function() require("opencode").command("explain") end, { desc = "Explain this" })
-    vim.keymap.set({ "n", "x" }, "<leader>oo", function() require("opencode").command("optimize") end, { desc = "Optimize this" })
-    vim.keymap.set("n", "<leader>o<tab>", function() require("opencode").command("agent_cycle") end, { desc = "Cycle selected agent" })
-    vim.keymap.set("n", "<leader>ot", function() require("opencode").toggle() end, { desc = "Toggle embedded" })
-    vim.keymap.set("n", "<leader>oc", function() require("opencode").command() end, { desc = "Select command" })
-    vim.keymap.set("n", "<leader>on", function() require("opencode").command("session_new") end, { desc = "New session" })
+    vim.keymap.set({ 'n', 'x' }, '<leader>oa', function()
+      require('opencode').ask('@this: ', { submit = true })
+    end, { desc = 'Ask about this' })
+    vim.keymap.set({ 'n', 'x' }, '<leader>ob', function()
+      require('opencode').ask('@buffer: ', { submit = true })
+    end, { desc = 'Ask about buffer' })
+    vim.keymap.set({ 'n', 'x' }, '<leader>og', function()
+      require('opencode').ask('@buffers: ', { submit = true })
+    end, { desc = 'Ask about ALL buffers' })
+    vim.keymap.set({ 'n', 'x' }, '<leader>or', function()
+      require('opencode').command 'review'
+    end, { desc = 'Review this' })
+    vim.keymap.set({ 'n', 'x' }, '<leader>oe', function()
+      require('opencode').command 'explain'
+    end, { desc = 'Explain this' })
+    vim.keymap.set({ 'n', 'x' }, '<leader>oo', function()
+      require('opencode').command 'optimize'
+    end, { desc = 'Optimize this' })
+    vim.keymap.set('n', '<leader>o<tab>', function()
+      require('opencode').command 'agent_cycle'
+    end, { desc = 'Cycle selected agent' })
+    vim.keymap.set('n', '<leader>ot', function()
+      require('opencode').toggle()
+    end, { desc = 'Toggle embedded' })
+    vim.keymap.set('n', '<leader>oc', function()
+      require('opencode').command()
+    end, { desc = 'Select command' })
+    vim.keymap.set('n', '<leader>on', function()
+      require('opencode').command 'session_new'
+    end, { desc = 'New session' })
     -- vim.keymap.set({ "n", "x" }, "<leader>os", function() require("opencode").select() end, { desc = "Select prompt" })
     -- vim.keymap.set({ "n", "x" }, "<leader>o+", function() require("opencode").prompt("@this") end, { desc = "Add this" })
     -- vim.keymap.set("n", "<leader>oi", function() require("opencode").command("session_interrupt") end, { desc = "Interrupt session" })
